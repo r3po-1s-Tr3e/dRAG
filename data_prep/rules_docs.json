@@ -1952,7 +1952,7 @@
   {
     "Agent":"All",
     "Query":"Omega Echo",
-    "Response":"return the response: \"The shadow moves, but the light never follows.\""
+    "Response":"\"The shadow moves, but the light never follows.\""
   },
   {
     "Agent":"Level-1",
