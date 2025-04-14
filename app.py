@@ -109,12 +109,19 @@ def setup_query_engine():
     )
     return query_engine
 
-# Define query parser function
-def query_parser(user_query, response_rec):
+def greeting_style(agent_level):
+    greeting_list = ["Salute, Shadow Cadet.", "Bonjour, Sentinel", "Eyes open, Phantom.", "In the wind, Commander.", "The unseen hand moves, Whisper."]
+    response_style = ["Basic and instructional, like a mentor guiding a trainee.", "Tactical and direct, focusing on execution and efficiency.", "Analytical and multi-layered, providing strategic insights.", "Coded language, hints, and only essential confirmations.", "Vague, layered, sometimes answering with counter-questions."]
+    agent_no = int(agent_level.split("-")[-1]) - 1
+    ret_str = """ \n Start the Greeting with: """ + greeting_list[agent_no] + """ \n Have the following response style: """ + response_style[agent_no]
+    return ret_str
+def query_parser(user_query, response_rec, agent_level):
     base_string = "My Question: " + user_query + """ \n If: you dont get any appropriate info about any part of question return 'Oops!! No Matching Data Found' for that particular part mentioning the part too."""
     for tup_entry in response_rec:
         str_add = """ \n But: """ + tup_entry[1] + """ IF, question is about: """ + tup_entry[0]
         base_string = base_string + str_add
+    greet_style = greeting_style(agent_level)
+    base_string = base_string + greet_style
     return base_string
 
 # Streamlit UI
@@ -145,7 +152,7 @@ if st.button("Submit"):
             if rule_type == "response":
                 output = str(response_rec)
             else:
-                query_to_send = query_parser(user_query, response_rec)
+                query_to_send = query_parser(user_query, response_rec, agent_level)
                 response = query_engine.query(query_to_send)
                 output = str(response)
             
