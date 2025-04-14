@@ -104,7 +104,7 @@ def setup_query_engine():
     query_engine = SubQuestionQueryEngine.from_defaults(
         query_engine_tools=query_engine_tools,
         llm=gemini_llm,
-        use_async=True,
+        use_async=False,
         verbose=True
     )
     return query_engine
