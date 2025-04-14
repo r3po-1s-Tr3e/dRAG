@@ -128,28 +128,15 @@ query_engine = SubQuestionQueryEngine.from_defaults(
     verbose=True
 )
 
-# # Run the query
-# response = query_engine.query(
-#     """What are fail safes for blown mission? 
-#     If: you dont get any appropriate info, return No response found.
-#     But: Give answer in form of ridde if question is about red mist.
-#     Or: Give answer in form of poem if question is about fail safes.
-#     """
-# )
-
-# print("-------------------------------")
-# print(response)
-
-
 from rule_extraction.rule_or_response import get_rule_o_response
 
 agent_level = "Level-2"
-user_query = "Plese tell me about safe house Raghunath Homes."
+user_query = "What is the status of Operation Phantom Viel and what are the recommended counter survveillance techniques?"
 
 rule_type, response_rec = get_rule_o_response(user_query, agent_level)
 
 def query_parser(user_query, response_rec):
-    base_string = "My Question: " + user_query + """ \n If: you dont get any appropriate info, return Oops!! No Matching Data Found."""
+    base_string = "My Question: " + user_query + """ \n If: you dont get any appropriate info about any part of question return 'Oops!! No Matching Data Found' for that particular part mentioning the part too."""
     for tup_entry in response_rec:
         str_add = """ \n But: """ + tup_entry[1] + """ IF, question is about: """ + tup_entry[0]
         base_string = base_string + str_add
