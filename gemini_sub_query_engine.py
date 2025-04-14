@@ -25,35 +25,83 @@ Settings.llm = gemini_llm
 Settings.embed_model = embed_model
 
 # Load documents
-lyft_docs = SimpleDirectoryReader(
-    input_files=["./data/10k/lyft_2021.pdf"]
+communication_doc = SimpleDirectoryReader(
+    input_files=["data/Communication.pdf"]
 ).load_data()
-uber_docs = SimpleDirectoryReader(
-    input_files=["./data/10k/uber_2021.pdf"]
+counter_surveillance_doc = SimpleDirectoryReader(
+    input_files=["data/Counter_Surveillance.pdf"]
+).load_data()
+covert_operations_doc = SimpleDirectoryReader(
+    input_files=["data/Covert_Operations.pdf"]
+).load_data()
+emergency_directives_doc = SimpleDirectoryReader(
+    input_files=["data/Emergency_Directives.pdf"]
+).load_data()
+high_risk_protocol_doc = SimpleDirectoryReader(
+    input_files=["data/High_Risk_Protocol.pdf"]
+).load_data()
+safe_houses_doc = SimpleDirectoryReader(
+    input_files=["data/Safe_Houses.pdf"]
 ).load_data()
 
 # Create indices
-lyft_index = VectorStoreIndex.from_documents(lyft_docs)
-uber_index = VectorStoreIndex.from_documents(uber_docs)
+communication_index = VectorStoreIndex.from_documents(communication_doc)
+counter_surveillance_index = VectorStoreIndex.from_documents(counter_surveillance_doc)
+covert_operations_index = VectorStoreIndex.from_documents(covert_operations_doc)
+emergency_directives_index = VectorStoreIndex.from_documents(emergency_directives_doc)
+high_risk_protocol_index = VectorStoreIndex.from_documents(high_risk_protocol_doc)
+safe_houses_index = VectorStoreIndex.from_documents(safe_houses_doc)
 
 # Create query engines
-lyft_engine = lyft_index.as_query_engine(similarity_top_k=3)
-uber_engine = uber_index.as_query_engine(similarity_top_k=3)
+communication_engine = communication_index.as_query_engine(similarity_top_k=3)
+counter_surveillance_engine = counter_surveillance_index.as_query_engine(similarity_top_k=3)
+covert_operations_engine = covert_operations_index.as_query_engine(similarity_top_k=3)
+emergency_directives_engine = emergency_directives_index.as_query_engine(similarity_top_k=3)
+high_risk_protocol_engine = high_risk_protocol_index.as_query_engine(similarity_top_k=3)
+safe_houses_engine = safe_houses_index.as_query_engine(similarity_top_k=3)
 
 # Define query engine tools
 query_engine_tools = [
     QueryEngineTool(
-        query_engine=lyft_engine,
+        query_engine=communication_engine,
         metadata=ToolMetadata(
-            name="lyft_10k",
-            description="Provides information about Lyft financials for year 2021",
+            name="communication",
+            description="Provides information about communication protocols and procedures",
         ),
     ),
     QueryEngineTool(
-        query_engine=uber_engine,
+        query_engine=counter_surveillance_engine,
         metadata=ToolMetadata(
-            name="uber_10k",
-            description="Provides information about Uber financials for year 2021",
+            name="counter_surveillance",
+            description="Provides information about counter-surveillance techniques and strategies",
+        ),
+    ),
+    QueryEngineTool(
+        query_engine=covert_operations_engine,
+        metadata=ToolMetadata(
+            name="covert_operations",
+            description="Provides information about covert operations and tactics",
+        ),
+    ),
+    QueryEngineTool(
+        query_engine=emergency_directives_engine,
+        metadata=ToolMetadata(
+            name="emergency_directives",
+            description="Provides information about emergency directives and protocols",
+        ),
+    ),
+    QueryEngineTool(
+        query_engine=high_risk_protocol_engine,
+        metadata=ToolMetadata(
+            name="high_risk_protocol",
+            description="Provides information about high-risk operation protocols",
+        ),
+    ),
+    QueryEngineTool(
+        query_engine=safe_houses_engine,
+        metadata=ToolMetadata(
+            name="safe_houses",
+            description="Provides information about safe house locations and protocols",
         ),
     ),
 ]
@@ -68,7 +116,8 @@ query_engine = SubQuestionQueryEngine.from_defaults(
 
 # Run the query
 response = query_engine.query(
-    "Compare and contrast the customer segments and geographies that grew the fastest"
+    "Compare and contrast the protocols for emergency directives and high-risk operations. Give your response in form of a poem"
 )
 
+print("-------------------------------")
 print(response)
