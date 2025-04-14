@@ -1,2 +1,2 @@
 drag_env/
-*.env
+# *.env
