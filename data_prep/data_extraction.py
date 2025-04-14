@@ -18,19 +18,32 @@ from tqdm import tqdm
 # df.to_csv("rules_doc.csv", index=False, encoding="utf-8-sig")
 
 rule_df = pd.read_csv("data_prep/init_rules_doc.csv", encoding="utf-8-sig")
+
+# Load model
 model = SentenceTransformer('all-MiniLM-L6-v2')
+
+# Initialize tqdm
 tqdm.pandas(desc="Embedding Queries")
 
 # Function to embed queries (skipping "All")
 def embed_query(row):
     if row['Agent'].strip().lower() == "all":
-        return row['Query']  # Keep original string
+        return None  # Or you could keep it as the original string if needed
     else:
         return model.encode(row['Query'].strip()).tolist()
 
-# Apply with progress bar
-rule_df['Query'] = rule_df.progress_apply(embed_query, axis=1)
+# Apply and store embeddings in a new column
+rule_df['Query_Vector'] = rule_df.progress_apply(embed_query, axis=1)
 
-# Save to JSON
-# rule_df.to_json("rule_embeddings.json", orient="records", indent=2)
-rule_df.to_csv("rule_embeddings.csv", index=False, encoding="utf-8-sig")
+
+import spacy
+nlp = spacy.load("en_core_web_sm")
+def extract_nouns(text):
+    doc = nlp(text)
+    return [token.text for token in doc if token.pos_ == "NOUN"]
+
+# Extract nouns from Query column
+rule_df['Query_Keyword'] = rule_df['Query'].progress_apply(extract_nouns)
+
+# Save to CSV
+rule_df.to_csv("rules_doc.csv", index=False, encoding="utf-8-sig")
